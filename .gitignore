@@ -1,1 +1,15 @@
 /.vscode
+Handlers/__pycache__/__init__.cpython-311.pyc
+Handlers/__pycache__/ReggressorHandler.cpython-311.pyc
+Providers/__pycache__/__init__.cpython-311.pyc
+Providers/__pycache__/ConfigurationProvider.cpython-311.pyc
+Providers/__pycache__/LoggerProvider.cpython-311.pyc
+Providers/__pycache__/ReggressorsProvider.cpython-311.pyc
+Services/__pycache__/__init__.cpython-311.pyc
+Services/__pycache__/ReggressorService.cpython-311.pyc
+Transfer/__pycache__/__init__.cpython-311.pyc
+Transfer/__pycache__/ConfigurationDto.cpython-311.pyc
+Transfer/__pycache__/CountryCodeDto.cpython-311.pyc
+Transfer/__pycache__/GetReggressorPredictionQuery.cpython-311.pyc
+Transfer/__pycache__/ReggressorPredictionDto.cpython-311.pyc
+Transfer/__pycache__/ServerResponseDto.cpython-311.pyc
