@@ -8,10 +8,12 @@ from pydantic import parse_obj_as as ParseObjAs
 
 from Transfer.ConfigurationDto import Configuration
 
-class ConfigurationProvider:
 
-    def GetConfiguration(self)-> Configuration:
-        with open("appsettings.json", "r") as configFile:
+class ConfigurationProvider:
+    enviroment: str = os.environ.get("ENVIRONMENT", "development")
+
+    def GetConfiguration(self) -> Configuration:
+        with open(f"appsettings.{self.enviroment}.json", "r") as configFile:
             configJson = json.load(configFile)
-    
+
         return ParseObjAs(Configuration, configJson)
