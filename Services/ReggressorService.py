@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pandas as pd
 import numpy as np
 import holidays as hd
-import pickle as pkl
+import joblib as job
 import bz2 as bz
 
 import warnings
@@ -106,9 +106,9 @@ class ReggressorService:
 
         self._AddTimeFeature(_futureDataFrame, query.countryCode)
 
-        if(os.path.exists(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.pkl")):
-            with bz.open(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.pkl", "rb") as file:
-                self._regressor = pkl.load(file)
+        if(os.path.exists(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib")):
+            with bz.open(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib", "rb") as file:
+                self._regressor = job.load(file)
         else:
             self._SetReggressor(_revelantDataFrame, query.timeSeriesDictId)
 

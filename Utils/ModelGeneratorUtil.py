@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
-import pickle as pkl
+import joblib as job
 import bz2 as bz
 
 
@@ -30,9 +30,9 @@ class ModelGenerator:
         if(not os.path.exists(f"Assets/Models/{columnId}")):
             os.mkdir(f"Assets/Models/{columnId}")
 
-        if(not os.path.exists(f"Assets/Models/{columnId}/{ticks}.pkl")):
-            with bz.open(f"Assets/Models/{columnId}/{ticks}.pkl", "wb") as file:
+        if(not os.path.exists(f"Assets/Models/{columnId}/{ticks}.joblib")):
+            with bz.open(f"Assets/Models/{columnId}/{ticks}.joblib", "wb") as file:
                 regressor: VotingRegressor = self._reggressorService.GetReggressonModel(columnId, ticks)
-                pkl.dump(regressor, file)
+                job.dump(regressor, file)
 
 ModelGenerator().GenerateModels()
