@@ -62,10 +62,6 @@ To deploy Sparkle Regressor, you have two options:
 
 You can access the live version of Sparkle Regressor at [https://sparkle-regressor.onrender.com/docs](https://sparkle-regressor.onrender.com/docs).
 
-## License
-
-This project is licensed under the [MIT License](LICENSE.md). See the [LICENSE](LICENSE.md) file for more details.
-
 ## Version
 
 The current version of Sparkle Regressor is 1.0.0.
