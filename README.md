@@ -19,11 +19,11 @@ Follow these steps to get started with Sparkle Regressor:
    python utils/ModelGeneratorUtil.py
    ```
 
-   Alternatively, if you have pre-generated models, you can skip this step or u can use a API Input: To use the API, provide a large dictionary of dates and values.
+   Alternatively, if you have pre-generated models, you can skip this step.
    
    The regressor will create personalized prediction models for each column in the dataset for various time frames, such as [24 hours, 48 hours, 168 hours, and 720 hours].(in memory if u use alternative approach)
 
-4. **API Input**: To use the API, provide a large dictionary of dates and values. The regressor will create personalized prediction models for each column in the dataset for various time frames, such as [24 hours, 48 hours, 168 hours, and 720 hours].
+4. **API Input**: To use the API, provide a large dictionary of dates and values.
 
 5. **Running the Local Server**: Execute `Host.py` to run a dedicated local server.
 
