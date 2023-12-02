@@ -4,9 +4,15 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
-from pydantic import parse_obj_as as ParseObjAs
+from pydantic import parse_obj_as as ParseObjAs, BaseModel
 
-from Transfer.ConfigurationDto import Configuration
+
+class Configuration(BaseModel):
+    host: str | None
+    port: int | None
+    version: str | None
+    env: str | None
+    debug: bool | None
 
 
 class ConfigurationProvider:

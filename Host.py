@@ -6,20 +6,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi import FastAPI
 
-from Handlers.ReggressorHandler import (
+from Handlers.RegressorHandler import (
     route as regressorRoute,
 )
 
-from Providers.ConfigurationProvider import ConfigurationProvider
-
-from Transfer.ConfigurationDto import Configuration
+from Providers.ConfigurationProvider import ConfigurationProvider, Configuration
 
 _configuration: Configuration = ConfigurationProvider().GetConfiguration()
 
-app = FastAPI(
-    debug=_configuration.debug,
-    version=_configuration.version
-)
+app = FastAPI(debug=_configuration.debug, version=_configuration.version)
 
 app.include_router(regressorRoute, prefix="/api")
 

@@ -9,7 +9,7 @@ import bz2 as bz
 
 
 from sklearn.ensemble import VotingRegressor
-from Services.ReggressorService import ReggressorService
+from Services.RegressorService import ReggressorService
 
 
 class ModelGenerator:
@@ -26,13 +26,15 @@ class ModelGenerator:
                 self.SaveModel(column.replace("cload_", ""), ticks)
 
     def SaveModel(self, columnId: int, ticks: int) -> None:
-        
-        if(not os.path.exists(f"Assets/Models/{columnId}")):
+        if not os.path.exists(f"Assets/Models/{columnId}"):
             os.mkdir(f"Assets/Models/{columnId}")
 
-        if(not os.path.exists(f"Assets/Models/{columnId}/{ticks}.joblib")):
+        if not os.path.exists(f"Assets/Models/{columnId}/{ticks}.joblib"):
             with bz.open(f"Assets/Models/{columnId}/{ticks}.joblib", "wb") as file:
-                regressor: VotingRegressor = self._reggressorService.GetReggressonModel(columnId, ticks)
+                regressor: VotingRegressor = self._reggressorService.GetRegressonModel(
+                    columnId, ticks
+                )
                 job.dump(regressor, file)
+
 
 ModelGenerator().GenerateModels()

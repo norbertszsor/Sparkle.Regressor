@@ -10,6 +10,7 @@ import joblib as job
 import bz2 as bz
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 from logging import Logger
@@ -17,12 +18,11 @@ from logging import Logger
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import VotingRegressor
 
-from Transfer.GetReggressorPredictionQuery import GetPredictionQuery
-from Transfer.ReggressorPredictionDto import ReggressorPredictionDto
+from Transfer.GetPredictionQuery import GetPredictionQuery
+from Transfer.PredictionDto import PredictionDto
 from Transfer.CountryCodeDto import CountryCodeDto
 
-from Providers.ReggressorsProvider import ReggressorProvider
-from Providers.LoggerProvider import LoggerProvider
+from Providers.RegressorsProvider import RegressorProvider
 
 
 _FUTURECOVERMULTIPLER: int = 2
@@ -35,52 +35,14 @@ class ReggressorService:
     _dataFrame: pd.DataFrame = None
     _regressor: VotingRegressor = None
 
-    _regressorProvider: ReggressorProvider = ReggressorProvider()
-    _logger: Logger = LoggerProvider().GetLogger()
+    _regressorProvider: RegressorProvider = RegressorProvider()
 
-    def GetReggressonModel(self, columnId: int, lag: int) -> VotingRegressor:
-        regressor: VotingRegressor = self._regressorProvider.GetVotingRegressor()
-
-        dataFrame: pd.DataFrame = pd.read_csv(r"Assets/train_data.csv")
-
-        dataFrame.columns = [str(i) for i in range(len(dataFrame.columns))]
-
-        dataFrame.rename(columns={"0": "index"}, inplace=True)       
-
-        dataFrame = pd.DataFrame(
-            {
-                "index": dataFrame["index"],
-                str(columnId): dataFrame[str(columnId)],
-            }
-        )
-
-        dataFrame["index"] = pd.to_datetime(dataFrame["index"])
-
-        dataFrame = dataFrame.set_index("index").sort_index()
-
-        #dataFrame.index = dataFrame.index.tz_localize("UTC")
-
-        self._AddLagFeature(dataFrame, lag, str(columnId))
-
-        self._AddTimeFeature(dataFrame, CountryCodeDto(code="PT"))
-
-        revelantDataFrame, _ = self._GetRevelantDataFrame(dataFrame, columnId)
-
-        train, _ = train_test_split(revelantDataFrame, test_size=_TESTSIZE, shuffle=True)
-
-        X_train = train.drop(str(columnId), axis=1)
-        y_train = train[str(columnId)]
-
-        regressor.fit(X_train, y_train)
-
-        return regressor
-    
-    def GetReggresorPrediciton(
-        self, query: GetPredictionQuery
-    ) -> ReggressorPredictionDto:
+    def GetRegresorPrediciton(self, query: GetPredictionQuery) -> PredictionDto:
         self._SetDataFrame(query)
 
-        _revelantDataFrame, _ = self._GetRevelantDataFrame(self._dataFrame,query.timeSeriesDictId)
+        _revelantDataFrame, _ = self._GetRevelantDataFrame(
+            self._dataFrame, query.timeSeriesDictId
+        )
 
         _futureIndex: pd.DatetimeIndex = pd.date_range(
             self._dataFrame.index[-1], periods=query.predictionTicks + 1, freq="H"
@@ -97,17 +59,22 @@ class ReggressorService:
             ]
         )
 
-        self._AddLagFeature(
+        self._AddLagFeatures(
             _futureDataFrame,
             query.predictionTicks,
             str(query.timeSeriesDictId),
             dropNaN=False,
         )
 
-        self._AddTimeFeature(_futureDataFrame, query.countryCode)
+        self._AddTimeFeatures(_futureDataFrame, query.countryCode)
 
-        if(os.path.exists(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib")):
-            with bz.open(f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib", "rb") as file:
+        if os.path.exists(
+            f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib"
+        ):
+            with bz.open(
+                f"Assets/Models/{query.timeSeriesDictId}/{query.predictionTicks}.joblib",
+                "rb",
+            ) as file:
                 self._regressor = job.load(file)
         else:
             self._SetReggressor(_revelantDataFrame, query.timeSeriesDictId)
@@ -125,11 +92,47 @@ class ReggressorService:
             for key, value in dict(zip(_futureIndex, _prediction)).items()
         }
 
-        return ReggressorPredictionDto(predictions = _predictionTimeSeries)
+        return PredictionDto(predictions=_predictionTimeSeries)
+
+    def GetRegressonModel(self, columnId: int, lag: int) -> VotingRegressor:
+        regressor: VotingRegressor = self._regressorProvider.GetVotingRegressor()
+
+        dataFrame: pd.DataFrame = pd.read_csv(r"Assets/train_data.csv")
+
+        dataFrame.columns = [str(i) for i in range(len(dataFrame.columns))]
+
+        dataFrame.rename(columns={"0": "index"}, inplace=True)
+
+        dataFrame = pd.DataFrame(
+            {
+                "index": dataFrame["index"],
+                str(columnId): dataFrame[str(columnId)],
+            }
+        )
+
+        dataFrame["index"] = pd.to_datetime(dataFrame["index"])
+
+        dataFrame = dataFrame.set_index("index").sort_index()
+
+        self._AddLagFeatures(dataFrame, lag, str(columnId))
+
+        self._AddTimeFeatures(dataFrame, CountryCodeDto(code="PT"))
+
+        revelantDataFrame, _ = self._GetRevelantDataFrame(dataFrame, columnId)
+
+        train, _ = train_test_split(
+            revelantDataFrame, test_size=_TESTSIZE, shuffle=True
+        )
+
+        X_train = train.drop(str(columnId), axis=1)
+        y_train = train[str(columnId)]
+
+        regressor.fit(X_train, y_train)
+
+        return regressor
 
     def _GetRevelantDataFrame(
-        self, dataFrame: pd.DataFrame,
-        timeSeriesId: int
+        self, dataFrame: pd.DataFrame, timeSeriesId: int
     ) -> tuple[pd.DataFrame, list[str]]:
         colerationSeries: pd.Series = abs(dataFrame.corr()[str(timeSeriesId)])
 
@@ -151,13 +154,13 @@ class ReggressorService:
 
         self._dataFrame = self._dataFrame.set_index("index").sort_index()
 
-        #self._dataFrame.index = self._dataFrame.index.tz_localize("UTC")
+        # self._dataFrame.index = self._dataFrame.index.tz_localize("UTC")
 
-        self._AddLagFeature(
+        self._AddLagFeatures(
             self._dataFrame, query.predictionTicks, str(query.timeSeriesDictId)
         )
 
-        self._AddTimeFeature(self._dataFrame, query.countryCode)
+        self._AddTimeFeatures(self._dataFrame, query.countryCode)
 
         return None
 
@@ -177,7 +180,7 @@ class ReggressorService:
 
         return None
 
-    def _AddLagFeature(
+    def _AddLagFeatures(
         self,
         dataFrame: pd.DataFrame,
         lagLenght: int,
@@ -199,9 +202,8 @@ class ReggressorService:
 
         return None
 
-    def _AddTimeFeature(self, dataFrame: pd.DataFrame, country: CountryCodeDto) -> None:
+    def _AddTimeFeatures(self, dataFrame: pd.DataFrame, country: CountryCodeDto) -> None:
         if country.code not in hd.utils.list_supported_countries().keys():
-            self._logger.warning(f"Country code {country.code} not supported")
             return None
 
         countryHoliday: hd.HolidayBase = hd.CountryHoliday(country.code)

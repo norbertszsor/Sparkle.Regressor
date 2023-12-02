@@ -1,4 +1,4 @@
 from pydantic import BaseModel
 
-class ReggressorPredictionDto(BaseModel):
+class PredictionDto(BaseModel):
     predictions: dict[str, float] | None

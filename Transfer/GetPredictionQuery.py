@@ -13,11 +13,11 @@ class GetPredictionQuery(BaseModel):
 
     def IsValid(self) -> None:
         if not self.timeSeriesDict:
-            raise Exception("Time series dict is empty")
+            raise Exception("Time series dictionary is empty")
         if not self.timeSeriesDictId:
-            raise Exception("Time series dict id is empty")
+            raise Exception("Time series dictionary id is empty")
         if self.predictionTicks >= len(self.timeSeriesDict) * _MINCOVERMULTIPLER:
             raise Exception(
-                "Prediction ticks is too small compared to time series dict"
+                "Prediction ticks is too big. It should be less than 2 times bigger than time series dictionary length"
             )
         return None

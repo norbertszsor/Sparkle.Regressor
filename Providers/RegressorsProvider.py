@@ -4,7 +4,7 @@ from sklearn.neural_network import MLPRegressor
 from xgboost import XGBRegressor
 
 
-class ReggressorProvider:
+class RegressorProvider:
     _mlpr: MLPRegressor = MLPRegressor(
         hidden_layer_sizes=(50, 50),
         activation="tanh",
@@ -38,10 +38,7 @@ class ReggressorProvider:
     )
 
     _dtr: DecisionTreeRegressor = DecisionTreeRegressor(
-        random_state=100, 
-        max_depth=10, 
-        min_samples_leaf=1, 
-        criterion="squared_error"
+        random_state=100, max_depth=10, min_samples_leaf=1, criterion="squared_error"
     )
 
     _etr: ExtraTreesRegressor = ExtraTreesRegressor(
