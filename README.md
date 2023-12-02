@@ -1,4 +1,4 @@
-# Sparkle Regressor v1.0.0
+# Sparkle Regressor
 Sparkle Regressor is a component of the Sparkle system, implemented in Python, and designed to forecast energy usage based on the provided data columns. This Python application serves as the dedicated regression module, and contains logic for creating personalized regression models incorporating for predicting future energy consumption patterns accurately. Sparkle Regressor is written in Python, using a modular layer approach.
 
 **Key Features:**
@@ -64,20 +64,4 @@ You can access the live version of Sparkle Regressor at [https://sparkle-regress
 
 ## Version
 
-The current version of Sparkle Regressor is 1.0.0.
-
-## Contribution
-
-Contributions to Sparkle Regressor are welcome! If you want to contribute, please follow these steps:
-
-1. Fork the repository on GitHub.
-
-2. Create a new branch with a descriptive name for your feature or bug fix.
-
-3. Make your changes and ensure that the code passes all tests.
-
-4. Submit a pull request with a clear description of the changes you've made.
-
-We appreciate your contributions to make Sparkle Regressor even better! If you have any questions or need more information, feel free to reach out.
-
-For more information or questions, please don't hesitate to contact us. Thank you for using Sparkle Regressor!
+The current version of Sparkle Core can be found there [https://github.com/norbertszsor/Sparkle.Regressor/releases](https://github.com/norbertszsor/Sparkle.Regressor/releases)
